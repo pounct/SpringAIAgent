@@ -60,3 +60,45 @@ Este código es un ejemplo de cómo utilizar Spring para crear una herramienta (
 
 Este código demuestra cómo encapsular una lógica de negocio simple dentro de un servicio de Spring, y cómo describir este servicio para que pueda ser utilizado en sistemas más amplios, potencialmente impulsados por modelos de lenguaje. Esto constituye una base para la creación de servicios más complejos e interactivos en un entorno Spring.
 
+# Explicación del Código: Bucle Dinámico con LLM y Spring
+
+En este ejemplo, estás utilizando un enfoque que combina **Spring** y **LLM** (Modelos de Lenguaje Grande) para ejecutar funciones de manera dinámica. La idea principal es crear un bucle que interactúe continuamente con el LLM para obtener y ejecutar funciones, luego procesar los resultados y repetir el ciclo según sea necesario.
+
+## 1. **Descripción del Bucle Dinámico**
+- **Interacción con LLM**: El proceso comienza enviando una solicitud al LLM. El LLM devuelve las funciones que se pueden ejecutar.
+- **Ejecución de Funciones**: A continuación, el sistema llama a las funciones indicadas, obtiene los resultados y los procesa.
+- **Bucle Continuo**: Este proceso se repite en un bucle, donde cada interacción con el LLM puede generar nuevas funciones a ejecutar. Este ciclo permite una interacción continua y dinámica con el LLM.
+
+## 2. **Manejo de Funciones con LLM y Spring**
+- Si el LLM no admite directamente herramientas o funciones específicas, es necesario implementar este bucle manualmente. En un entorno como **Python**, se debe manejar manualmente la recuperación del nombre de la función, la ejecución de la función, y la recolección de la respuesta.
+
+## 3. **Implementación en Código**
+- A continuación se muestra un ejemplo de cómo se puede implementar este proceso en Java utilizando Spring:
+
+   ```java
+   public String analisisReport(String company) {
+       return chatClient
+               .prompt()
+               .system(systemMessagePrompt)
+               .user("Company : " + company)
+               .functions("tool1", "tool2")
+               .call().content();
+   }
+Descripción del Código:
+prompt(): Inicia una nueva solicitud al LLM.
+system(systemMessagePrompt): Especifica el mensaje del sistema que debe guiar al LLM en la ejecución de las funciones.
+user("Company : " + company): Pasa la entrada del usuario (en este caso, el nombre de la empresa) al LLM.
+functions("tool1", "tool2"): Indica al LLM qué funciones están disponibles para ser llamadas.
+call().content(): Ejecuta el prompt y devuelve el contenido de la respuesta del LLM.
+4. Implementación de un Bucle en Python
+   Si se trabaja en Python, se tendría que implementar un bucle que haga lo siguiente:
+   Enviar una solicitud al LLM.
+   Recuperar el nombre de la función desde la respuesta.
+   Ejecutar la función y evaluar los resultados.
+   Generar un nuevo mensaje basado en la respuesta.
+   Añadir el mensaje a la lista de mensajes y repetir el ciclo.
+
+Este enfoque permite a las aplicaciones empresariales interactuar de manera dinámica y continua con un LLM, utilizando Spring para orquestar la ejecución de funciones. Implementar este bucle en el código es esencial para que el agente pueda tomar decisiones y ejecutar tareas de forma autónoma, lo cual es fundamental en la automatización de sistemas de información inteligentes.
+
+
+Este resumen explica el concepto del bucle dinámico en la interacción con un LLM utilizando Spring y da una idea clara de cómo se podría implementar en Python si fuera necesario.
