@@ -102,3 +102,82 @@ Este enfoque permite a las aplicaciones empresariales interactuar de manera din�
 
 
 Este resumen explica el concepto del bucle dinámico en la interacción con un LLM utilizando Spring y da una idea clara de cómo se podría implementar en Python si fuera necesario.
+
+
+# Sustitución de la Anotación `@Service` por `@AiAgent`
+
+En este ejemplo, se muestra cómo reemplazar la anotación `@Service` por una nueva anotación personalizada `@AiAgent`, diseñada específicamente para designar agentes de IA en tu aplicación. A continuación, se explica cómo hacerlo y cómo se integra en el servicio `AnalysisAgent`.
+
+## 1. **Definición de la Anotación `@AiAgent`**
+La anotación `@AiAgent` se define utilizando la anotación `@Component` de Spring como base, lo que le permite comportarse de manera similar a `@Service` pero con una intención específica para identificar agentes de IA.
+
+```java
+package com.pounct.agent.annotations;
+
+import org.springframework.core.annotation.AliasFor;
+import org.springframework.stereotype.Component;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+@Retention(RetentionPolicy.RUNTIME)
+@Component
+public @interface AiAgent {
+    @AliasFor(annotation = Component.class)
+    public String value() default "";
+}
+
+
+## Modificación del Servicio AnalysisAgent para Usar @AiAgent
+
+Ahora, se reemplaza la anotación @Service por @AiAgent en la clase AnalysisAgent, que representa un agente de análisis que interactúa con un cliente de chat basado en IA para generar informes financieros.
+
+package com.pounct.agent.agents;
+
+import com.pounct.agent.annotations.AiAgent;
+import org.springframework.ai.chat.client.ChatClient;
+
+@AiAgent
+public class AnalysisAgent {
+    private final ChatClient chatClient;
+    private String systemMessagePrompt = """
+            Your role is to generate a financial report of a given company using actual financial data.
+            A report should include the company information like name, website, country,
+            and also include a conclusion.
+            """;
+
+    private final String[] tools = new String[]{"tool1", "tool2"};
+
+    public AnalysisAgent(ChatClient.Builder chatClientBuilder) {
+        this.chatClient = chatClientBuilder
+                .defaultSystem(systemMessagePrompt)
+                .defaultFunctions(tools)
+                .build();
+    }
+
+    public String analysisReport(String company) {
+        return chatClient
+                .prompt()
+                .user("Company : " + company)
+                .call().content();
+    }
+}
+
+Explicación de los Cambios:
+Anotación @AiAgent:
+
+Se sustituye la anotación @Service por @AiAgent, lo que indica que esta clase actúa como un agente de IA dentro del contexto de la aplicación.
+Esta anotación se comporta de manera similar a @Service en cuanto a la gestión de beans por parte de Spring.
+Servicio AnalysisAgent:
+
+El servicio AnalysisAgent utiliza ChatClient para generar un informe financiero de una empresa utilizando datos financieros actuales.
+Se ha definido un mensaje del sistema por defecto (systemMessagePrompt) y una lista de herramientas (tools) que el agente puede utilizar.
+Método analysisReport:
+
+Este método crea un prompt basado en la entrada del usuario (nombre de la empresa) y devuelve el contenido del informe generado por la IA.
+
+Con estas modificaciones, se ha creado una anotación personalizada @AiAgent que facilita la identificación y gestión de agentes de IA dentro de la aplicación. Esto mejora la claridad del código y su mantenibilidad, destacando explícitamente la función y propósito de cada servicio anotado con @AiAgent.
+
+
+Este resumen explica cómo reemplazar `@Service` por `@AiAgent` en un servicio de Spring y cómo configurar ese servicio para interactuar con un modelo de lenguaje grande (LLM) para generar informes financieros. Está diseñado para ser claro y comprensible en un entorno de desarrollo en GitHub.
+

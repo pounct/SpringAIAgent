@@ -1,9 +1,10 @@
 package com.pounct.agent.agents;
 
+import com.pounct.agent.annotations.AiAgent;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;
 
-@Service
+@AiAgent
 public class AnalysisAgent {
     private final ChatClient chatClient;
     private String systemMessagePrompt = """
