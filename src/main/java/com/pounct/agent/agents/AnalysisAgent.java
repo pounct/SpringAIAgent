@@ -5,22 +5,26 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AnalysisAgent {
-    private ChatClient chatClient;
+    private final ChatClient chatClient;
     private String systemMessagePrompt = """
             Your role generate a financial report of a gived company using actual financial data
             a report include de company information like name web contry
             and include a conclusion
             """;
 
+    private final String[] tools = new String[]{"tool1", "tool2"};
     public AnalysisAgent(ChatClient.Builder chatClientBuilder) {
-        this.chatClient = chatClientBuilder.build();
+        this.chatClient = chatClientBuilder
+                .defaultSystem(systemMessagePrompt)
+                .defaultFunctions(tools)
+                .build();
     }
-    public String analisisReport(String company){
+    public String analysisReport(String company){
         return chatClient
                 .prompt()
-                .system(systemMessagePrompt)
+                //.system(systemMessagePrompt)
                 .user("Company : "+ company)
-                .functions("tool1", "tool2")
+                //.functions(tools)
                 .call().content();
     }
 }
