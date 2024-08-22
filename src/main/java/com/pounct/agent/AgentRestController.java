@@ -24,7 +24,7 @@ public class AgentRestController {
                 .prompt()
                 .system(systemMessagePrompt)
                 .user("Company : "+ company)
-                .functions("tool1")
+                .functions("tool1", "tool2")
                 .call().content();
     }
 }
